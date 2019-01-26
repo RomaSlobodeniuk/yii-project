@@ -3,12 +3,15 @@
 namespace app\controllers;
 
 use Yii;
+use yii\db\ActiveQuery;
+use yii\data\Pagination;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use app\models\Articles;
 
 class SiteController extends Controller
 {
@@ -61,7 +64,62 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        return $this->render('index', ['my_custom_param' => 'Hello!']);
+    }
+
+    /**
+     * Displays homepage.
+     *
+     * @return string
+     */
+    public function actionArticles()
+    {
+        /** @var ActiveQuery $query */
+        $query = Articles::find();
+        $allArticlesCount = $query->count();
+        $pagination = new Pagination([
+            'totalCount' => $query->count(),
+            'pageSize' => 1,
+            'pageSizeParam' => false,
+            'forcePageParam' => false
+        ]);
+        $articles = $query->orderBy(['date' => SORT_DESC])
+            ->offset($pagination->offset)
+            ->limit($pagination->limit)
+            ->all();
+        $this->view->title = 'Articles';
+        return $this->render(
+            'articles',
+            [
+                'articles' => $articles,
+                'allArticlesCount' => $allArticlesCount,
+                'activePage' => Yii::$app->request->get('page', 1),
+                'countPages' => $pagination->getPageCount(),
+                'pagination' => $pagination
+            ]
+        );
+    }
+
+    /**
+     * Displays homepage.
+     *
+     * @return string
+     */
+    public function actionArticle()
+    {
+        $articleId = Yii::$app->request->get('id', 1);
+        $article = Articles::find()->where(['id' => $articleId])->one();
+        if (!$article) {
+            $article = Articles::find()->where(['id' => 1])->one();
+        }
+
+        $this->view->title = $article->title;
+        return $this->render(
+            'single_article',
+            [
+                'article' => $article
+            ]
+        );
     }
 
     /**
