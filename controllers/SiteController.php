@@ -172,7 +172,6 @@ class SiteController extends Controller
         if ($article) {
             try {
                 $title = $article->title;
-                throw new \Exception('Could not delete!');
                 $article->delete();
                 Yii::$app->session->setFlash('success', "Article '" . $title . "' was removed!");
             } catch (\Throwable $exception) {
