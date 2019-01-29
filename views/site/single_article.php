@@ -14,6 +14,8 @@ use yii\helpers\Url;
 
             <!-- Title -->
             <h1 class="mt-4" style="color: red;"><?= $article->title?></h1>
+            - <a href="<?= $url = Url::to(['site/edit', 'id' => $article->id]); ?>">Edit</a>
+            - <a href="<?= $url = Url::to(['site/remove', 'id' => $article->id]); ?>">Remove</a>
 
             <!-- Author -->
             <p class="lead">
@@ -29,7 +31,7 @@ use yii\helpers\Url;
             <hr>
 
             <!-- Preview Image -->
-            <img class="img-fluid rounded" src="<?=  Url::to('@web/assets/images/articles/' . $article->image) ?>" alt="" style="width: 100%;">
+            <img class="img-fluid rounded" src="<?=  Url::to('@web/' . $article->image) ?>" alt="" style="width: 100%;">
 
             <hr>
 

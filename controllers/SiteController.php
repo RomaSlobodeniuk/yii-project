@@ -12,6 +12,10 @@ use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\Articles;
+use app\models\MyForm;
+use yii\helpers\Html;
+use yii\web\UploadedFile;
+use yii\helpers\Url;
 
 class SiteController extends Controller
 {
@@ -78,7 +82,7 @@ class SiteController extends Controller
         $query = Articles::find();
         $allArticlesCount = $query->count();
         $pagination = new Pagination([
-            'totalCount' => $query->count(),
+            'totalCount' => $allArticlesCount,
             'pageSize' => 1,
             'pageSizeParam' => false,
             'forcePageParam' => false
@@ -120,6 +124,64 @@ class SiteController extends Controller
                 'article' => $article
             ]
         );
+    }
+
+    /**
+     * Displays homepage.
+     *
+     * @return string
+     */
+    public function actionEdit()
+    {
+        $articleId = Yii::$app->request->get('id', 1);
+        $article = Articles::find()->where(['id' => $articleId])->one();
+        if (!$article) {
+            $article = Articles::find()->where(['id' => 1])->one();
+        }
+
+        $form = new MyForm();
+        if ($form->load(Yii::$app->request->post()) && $form->validate()){
+            $article->title = Html::encode($form->title);
+            $article->short_description = Html::encode($form->short_description);
+            $article->description = Html::encode($form->description);
+            $article->date = Html::encode($form->date);
+            $article->author = Html::encode($form->author);
+            $form->image = UploadedFile::getInstance($form, 'image');
+            $fileName = 'assets/images/articles/' . $form->image->baseName . '.' . $form->image->extension;
+            if ($form->image->saveAs($fileName)) {
+                $article->image = $fileName;
+            }
+
+            $article->save();
+        }
+
+        $this->view->title = $article->title;
+        return $this->render(
+            'article_edit',
+            [
+                'article' => $article,
+                'form' => $form
+            ]
+        );
+    }
+
+    public function actionRemove()
+    {
+        $articleId = Yii::$app->request->get('id', 1);
+        $article = Articles::find()->where(['id' => $articleId])->one();
+        if ($article) {
+            try {
+                $title = $article->title;
+                throw new \Exception('Could not delete!');
+                $article->delete();
+                Yii::$app->session->setFlash('success', "Article '" . $title . "' was removed!");
+            } catch (\Throwable $exception) {
+                Yii::$app->session->setFlash('error', $exception->getMessage());
+            }
+        }
+
+        $url = Url::to(['site/articles']);
+        $this->redirect($url,302);
     }
 
     /**

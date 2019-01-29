@@ -20,7 +20,7 @@ use yii\widgets\LinkPager;
             <div class="row">
                 <div class="col-md-8">
                     <a href="#">
-                        <img class="img-fluid rounded mb-3 mb-md-0" src="<?=  Url::to('@web/assets/images/articles/' . $article->image) ?>" alt="">
+                        <img class="img-fluid article rounded mb-3 mb-md-0" src="<?=  Url::to('@web/' . $article->image) ?>" alt="">
                     </a>
                 </div>
                 <div class="col-md-4">
