@@ -1,66 +1,53 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: olia
- * Date: 26.01.19
- * Time: 14:28
- */
-$this->title = 'My Yii Application';
+
+
+use yii\helpers\Url;
+use yii\widgets\LinkPager;
+
+/* @var $this yii\web\View */
+
 ?>
-<div class="site-index">
+<div class="site-articles">
 
-    <div class="jumbotron">
-        <h1> <?= $var ?></h1>
+    <!-- Page Content -->
+    <div class="container">
 
-        <p class="lead">My Articles</p>
+        <!-- Page Heading -->
+        <h1 class="my-4">My Articles
+            <small>Welcome!</small>
+        </h1>
 
-        <ul class="list-group">
-            <?php foreach ($articles as $article): ?>
-            <li class="list-group-item">
-
-            <div class="card" style="width: 18rem;">
-            <img src="..." class="card-img-top" alt="...">
-            <div class="card-body">
-                <h5 class="card-title">Card title <?=$article->title ?> </h5>
-                <p class="card-text"><?=$article->short_description  ?> </p>
+        <?php foreach ($articles as $article): ?>
+            <div class="row">
+                <div class="col-md-8">
+                    <a href="#">
+                        <img class="img-fluid article rounded mb-3 mb-md-0" src="<?=  Url::to('@web/' . $article->image) ?>" alt="">
+                    </a>
+                </div>
+                <div class="col-md-4">
+                    <h3><?= $article->title ?></h3>
+                    <p><?= $article->short_description ?></p>
+                    <p>Date: <?= $article->date ?></p>
+                    <p>Author: <?= $article->author ?></p>
+                    <a class="btn btn-primary" href="<?= $url = Url::to(['site/article', 'id' => $article->id]); ?>">Show More</a>
+                </div>
             </div>
-            <ul class="list-group list-group-flush">
+            <hr>
+        <?php endforeach; ?>
 
-                <li class="list-group-item">Date: <?=$article->date ?> </li>
-                <li class="list-group-item">Author:<?=$article->author ?> </li>
-
-            </ul>
-
-            <div class="card-body">
-                <a href="#" class="card-link"><?=$article->title ?> </a>
+        <!-- Pagination -->
+        <div class="text-center">
+            <?= LinkPager::widget([
+                'pagination' => $pagination,
+                'firstPageLabel' => 'Start',
+                'lastPageLabel' => 'End',
+            ]); ?>
+            <div class="alert alert-info">
+                Page <?= $activePage ?> from <?= $countPages ?>
             </div>
-    </div>
-
-
-         <?php endforeach; ?>
-        </ul>
+        </div>
 
     </div>
+    <!-- /.container -->
+
 </div>
-
-
-
-<!--
-
-<div class="card" style="width: 18rem;">
-  <img src="..." class="card-img-top" alt="...">
-  <div class="card-body">
-    <h5 class="card-title">Card title</h5>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-  </div>
-  <ul class="list-group list-group-flush">
-    <li class="list-group-item">Cras justo odio</li>
-    <li class="list-group-item">Dapibus ac facilisis in</li>
-    <li class="list-group-item">Vestibulum at eros</li>
-  </ul>
-  <div class="card-body">
-    <a href="#" class="card-link">Card link</a>
-    <a href="#" class="card-link">Another link</a>
-  </div>
-</div>
--->
