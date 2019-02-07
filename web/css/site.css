@@ -117,3 +117,7 @@ a.desc:after {
 .article {
     width: 100%;
 }
+
+.slide {
+    margin-bottom: 100px;
+}

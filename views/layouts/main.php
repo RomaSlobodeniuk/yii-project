@@ -9,6 +9,7 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
+use yii\helpers\Url;
 
 AppAsset::register($this);
 ?>
@@ -22,10 +23,6 @@ AppAsset::register($this);
     <?= Html::csrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
-<<<<<<< HEAD
-=======
-    <link rel="stylesheet" href=""/>
->>>>>>> 49d17e2cc20835344ae83795dde1f0fa760d90d7
 </head>
 <body>
 <?php $this->beginBody() ?>
@@ -42,7 +39,8 @@ AppAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
-            ['label' => 'Articles', 'url' => ['/site/articles']],
+            (!Yii::$app->user->isGuest ? ['label' => 'Create Article', 'url' => ['/site/create-article']] : ''),
+            (!Yii::$app->user->isGuest ? ['label' => 'Articles', 'url' => ['/site/articles']] : ''),
             ['label' => 'Home', 'url' => ['/site/index']],
             ['label' => 'About', 'url' => ['/site/about']],
             ['label' => 'Contact', 'url' => ['/site/contact']],
@@ -81,6 +79,7 @@ AppAsset::register($this);
 </footer>
 
 <?php $this->endBody() ?>
+<script src="<?=  Url::to('@web/js/my.js?122') ?>"></script>
 </body>
 </html>
 <?php $this->endPage() ?>

@@ -78,6 +78,10 @@ class SiteController extends Controller
      */
     public function actionArticles()
     {
+        if (Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
         /** @var ActiveQuery $query */
         $query = Articles::find();
         $allArticlesCount = $query->count();
@@ -111,6 +115,10 @@ class SiteController extends Controller
      */
     public function actionArticle()
     {
+        if (Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
         $articleId = Yii::$app->request->get('id', 1);
         $article = Articles::find()->where(['id' => $articleId])->one();
         if (!$article) {
@@ -133,6 +141,10 @@ class SiteController extends Controller
      */
     public function actionEdit()
     {
+        if (Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
         $articleId = Yii::$app->request->get('id', 1);
         $article = Articles::find()->where(['id' => $articleId])->one();
         if (!$article) {
@@ -160,6 +172,43 @@ class SiteController extends Controller
             'article_edit',
             [
                 'article' => $article,
+                'form' => $form
+            ]
+        );
+    }
+
+    /**
+     * Displays homepage.
+     *
+     * @return string
+     */
+    public function actionCreateArticle()
+    {
+        if (Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
+        $form = new MyForm();
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+            $article = new Articles();
+            $article->title = Html::encode($form->title);
+            $article->short_description = Html::encode($form->short_description);
+            $article->description = Html::encode($form->description);
+            $article->date = Html::encode($form->date);
+            $article->author = Html::encode($form->author);
+            $form->image = UploadedFile::getInstance($form, 'image');
+            $fileName = 'assets/images/articles/' . $form->image->baseName . '.' . $form->image->extension;
+            if ($form->image->saveAs($fileName)) {
+                $article->image = $fileName;
+            }
+
+            $article->save();
+        }
+
+        $this->view->title = 'Create Article Page';
+        return $this->render(
+            'article_create',
+            [
                 'form' => $form
             ]
         );

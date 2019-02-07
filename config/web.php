@@ -51,6 +51,7 @@ $config = [
                 'articles' => 'site/articles',
                 'article/<id:\d+>' => 'site/article',
                 'edit/<id:\d+>' => 'site/edit',
+                'create' => 'site/create-article',
                 'remove/<id:\d+>' => 'site/remove',
             ]
         ],
