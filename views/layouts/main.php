@@ -80,6 +80,7 @@ AppAsset::register($this);
 
 <?php $this->endBody() ?>
 <script src="<?=  Url::to('@web/js/my.js?122') ?>"></script>
+<script src="<?=  Url::to('@web/js/send-ajax.js') ?>"></script>
 </body>
 </html>
 <?php $this->endPage() ?>

@@ -13,6 +13,8 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\Articles;
 use app\models\MyForm;
+use app\models\Comments;
+use app\models\CommentsForm;
 use yii\helpers\Html;
 use yii\web\UploadedFile;
 use yii\helpers\Url;
@@ -125,11 +127,24 @@ class SiteController extends Controller
             $article = Articles::find()->where(['id' => 1])->one();
         }
 
+        $commentsForm = new CommentsForm();
+        if ($commentsForm->load(Yii::$app->request->post()) && $commentsForm->validate()){
+            $comments = new Comments();
+            $comments->name = Html::encode($commentsForm->name);
+            $comments->text = Html::encode($commentsForm->text);
+            $comments->article_id = $article->id;
+            $comments->save();
+        }
+
+        $comments = Comments::find()->where(['article_id' => $article->id])
+            ->orderBy(['id' => SORT_DESC])->all();
         $this->view->title = $article->title;
         return $this->render(
             'single_article',
             [
-                'article' => $article
+                'article' => $article,
+                'comments' => $comments,
+                'commentsForm' => $commentsForm
             ]
         );
     }

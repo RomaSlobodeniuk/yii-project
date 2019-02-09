@@ -1,6 +1,8 @@
 <?php
 
 use yii\helpers\Url;
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 
 ?>
 
@@ -56,50 +58,33 @@ use yii\helpers\Url;
             <div class="card my-4">
                 <h5 class="card-header">Leave a Comment:</h5>
                 <div class="card-body">
-                    <form>
-                        <div class="form-group">
-                            <textarea class="form-control" rows="3"></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </form>
+                    <?php $f = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data', 'class' => 'comments']]); ?>
+                    <?= $f->field($commentsForm, 'name')->input('text', ['value' => '']); ?>
+                    <?= $f->field($commentsForm, 'text')->input('textarea', ['value' => '']); ?>
+                    <?= $f->field($commentsForm, 'article_id')->textArea()->label(false)->input('hidden', ['value' => $article->id]); ?>
+                    <?= Html::submitButton('Save'); ?>
+                    <?php ActiveForm::end(); ?>
                 </div>
             </div>
 
             <!-- Single Comment -->
-            <div class="media mb-4">
-                <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-                <div class="media-body">
-                    <h5 class="mt-0">Commenter Name</h5>
-                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                </div>
-            </div>
-
-            <!-- Comment with nested comments -->
-            <div class="media mb-4">
-                <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-                <div class="media-body">
-                    <h5 class="mt-0">Commenter Name</h5>
-                    Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-
-                    <div class="media mt-4">
+            <div class="comments-block">
+                <?php foreach ($comments as $comment): ?>
+                    <div class="media mb-4">
                         <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
                         <div class="media-body">
-                            <h5 class="mt-0">Commenter Name</h5>
-                            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
+                            <h5 class="mt-0">
+                                <?php if ($comment->name === 'Vasia'): ?>
+                                    <strong><?= $comment->name ?></strong>
+                                <?php else: ?>
+                                    <?= $comment->name ?>
+                                <?php endif ?>
+                            </h5>
+                            <p><?= $comment->text ?></p>
                         </div>
                     </div>
-
-                    <div class="media mt-4">
-                        <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-                        <div class="media-body">
-                            <h5 class="mt-0">Commenter Name</h5>
-                            Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                        </div>
-                    </div>
-
-                </div>
+                <?php endforeach ?>
             </div>
-
         </div>
 
         <!-- Sidebar Widgets Column -->
